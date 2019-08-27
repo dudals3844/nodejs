@@ -1,5 +1,11 @@
-function main(){
-	console.log("Hello goorm!");
-}
+var express = require('express');
 
-main();
+var app = express();
+
+app.get('/', function (req, res){
+    res.send('Hello World!');
+});
+
+app.listen(3000, function(){
+    console.log('Server on');
+});
