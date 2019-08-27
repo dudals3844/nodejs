@@ -1,6 +1,17 @@
 var express = require('express');
 var path = require('path');
 var app = express();
+var mongoose = require('mongoose');
+
+mongoose.connect("mongodb+srv://dudals3844:dudals34273844@cluster0-ie0jk.mongodb.net/test?retryWrites=true&w=majority");
+
+var db = mongoose.connection;
+db.once("open", function(){
+    console.log("DB connected");
+});
+db.on("error",function(err){
+    console.log("DB Error: ", err);
+});
 
 app.set("view engine", 'ejs');
 app.use(express.static(__dirname+'/public'));
