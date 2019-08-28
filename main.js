@@ -1,10 +1,13 @@
+//import modules
 var express = require('express');
 var path = require('path');
 var app = express();
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 //mongoose.connect(process.env.MONGO_DB);
 
+//connect database
 mongoose.connect("mongodb+srv://dudals3844:dudals34273844@cluster0-ie0jk.mongodb.net/test?retryWrites=true&w=majority");
 
 var db = mongoose.connection;
@@ -32,12 +35,42 @@ Data.findOne({name:"myData"}, function(err,data){
 });
 
 
+//model setting
+var postSchema = mongoose.Schema({
+    title: {type:String, required:true},
+    body: {type:String,  required:true},
+    createdAt: {type:Date,default:Date.now},
+    updatedAt: Data
+});
+
+var Post = mongoose.model('post',postSchema);
 
 
-
-
+//view setting
 app.set("view engine", 'ejs');
+
+
+//set middlewares
 app.use(express.static(__dirname+'/public'));
+app.use(bodyParser.json());
+
+
+//set routes
+app.get('/posts',  function(req,res){
+    Post.find({},function (err, posts){
+        if(err) return res.json({success: false, message: err});
+        res.json({success:true , data:posts});
+    });
+});
+
+//index
+app.post('/posts', function(req, res){
+    Post.create(req.body.post, function(err, post){
+        if(err) return res.json({success: false , message:err});
+        res.json({success: true, data:post});
+    });
+}); //create
+
 
 //var data = {count:0};
 app.get('/', function(req, res){
@@ -72,7 +105,7 @@ app.get('/set/:num', function (req,res){
 
 
 
-
+//start server
 app.listen(3000, function(){
     console.log('Server on');
 });
